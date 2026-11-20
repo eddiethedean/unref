@@ -164,9 +164,10 @@ def test_undecodable(name: str, error: str) -> None:
     assert result.stdout == f"{path}:1:1: invalid-syntax '{error}'\n"
 
 
-def test_non_ascii_comment_after_encoding_name(tmp_path: Path) -> None:
+@pytest.mark.parametrize("encoding", ["utf-8", "latin-1"])
+def test_non_ascii_comment_after_encoding_name(tmp_path: Path, encoding: str) -> None:
     file = tmp_path / "app.py"
-    file.write_bytes(b"# coding: latin-1\xc3\xa9\nprint('caf\xe9')\n")
+    file.write_bytes(f"# coding: {encoding}".encode("ascii") + b"\xc3\xa9\n" + "print('café')\n".encode(encoding))
 
     result = run(["app.py"], cwd=tmp_path)
 
