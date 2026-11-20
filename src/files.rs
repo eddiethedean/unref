@@ -18,7 +18,7 @@ use crate::references::{Binding, References, walk_module};
 
 /// The encoding declaration of a module (PEP 263), on one of its first two lines.
 static CODING: LazyLock<Regex> = LazyLock::new(|| {
-    Regex::new(r"^[ \t\x0c]*#.*?coding[:=][ \t]*([-\w.]+)").expect("valid pattern")
+    Regex::new(r"^[ \t\x0c]*#.*?coding[:=][ \t]*([A-Za-z0-9_.-]+)").expect("valid pattern")
 });
 
 /// What a Python file defines and refers to.

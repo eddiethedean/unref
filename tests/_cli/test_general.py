@@ -164,6 +164,16 @@ def test_undecodable(name: str, error: str) -> None:
     assert result.stdout == f"{path}:1:1: invalid-syntax '{error}'\n"
 
 
+def test_non_ascii_comment_after_encoding_name(tmp_path: Path) -> None:
+    file = tmp_path / "app.py"
+    file.write_bytes(b"# coding: latin-1\xc3\xa9\nprint('caf\xe9')\n")
+
+    result = run(["app.py"], cwd=tmp_path)
+
+    assert result.exit_code == 0
+    assert result.output == ""
+
+
 def test_linked_module(tmp_path: Path) -> None:
     # A link to a file is imported by its own name. What is used through it is used in the file that it
     # links to as well, since they are one source.
